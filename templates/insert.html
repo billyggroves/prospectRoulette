@@ -1,0 +1,206 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Insert
+{% endblock %}
+
+{% block main %}
+    <head>
+        <script>
+            $(document).ready(function() {
+
+                $("input[id='addContact2']").click(function() {
+                    $('#contactData').show();
+                    $('#addContact2').hide();
+                });
+
+                $('input[name=companyName]').change(function(){
+                    $('input[name=companyName]').removeClass("required");
+                });
+                $('input[name=companyPhone]').change(function(){
+                    $('input[name=companyPhone]').removeClass("required");
+                });
+                $('input[name=companyStreet]').change(function(){
+                    $('input[name=companyStreet]').removeClass("required");
+                });
+                $('input[name=companyCity]').change(function(){
+                    $('input[name=companyCity]').removeClass("required");
+                });
+                $('input[name=companyState]').change(function(){
+                    $('input[name=companyState]').removeClass("required");
+                });
+                $('input[name=companyZip]').change(function(){
+                    $('input[name=companyZip]').removeClass("required");
+                });
+                $('input[name=companyCountry]').change(function(){
+                    $('input[name=companyCountry]').removeClass("required");
+                });
+                $('input[name=companyStatus]').change('click', function(){
+                    $('#radio').removeClass("required");
+                });
+                $('textarea[name=companyMessage]').change('click', function(){
+                    $('textarea[name=companyMessage]').removeClass("required");
+                });
+
+                $("input[id='submit']").click(function() {
+
+                    var inputs = {
+                        companyName : $('input[name=companyName]').val(),
+                        companyPhone : $('input[name=companyPhone]').val(),
+                        companyStreet : $('input[name=companyStreet]').val(),
+                        companyCity : $('input[name=companyCity]').val(),
+                        companyState : $('input[name=companyState]').val(),
+                        companyZip : $('input[name=companyZip]').val(),
+                        companyCountry : $('input[name=companyCountry]').val(),
+                        companyStatus: $("input[name=companyStatus]:checked").val(),
+                        companyMessage: $('textarea[name=companyMessage]').val()
+                    };
+
+                    console.log(inputs);
+
+                    var error = false;
+
+                    $.each(inputs, function(index, value){
+                        console.log(index + ": " + value);
+                        if (value == null || value == "" || value == undefined) {
+                            if(index == "companyMessage") {
+                                $("textarea[name=" + index.toString() + "]").addClass("required");
+                            } else {
+                                $("input[name=" + index.toString() + "]").addClass("required");
+                            }
+                            error = true;
+                        }
+
+                        if (!$('input[name=companyStatus]').is(":checked")) {
+                            $('#radio').addClass("required");
+                            error = true;
+                        }
+                    });
+
+                    if(error == true) {
+                        $('#snackbar').text("All fields in red are required!");
+                        $('#snackbar').removeClass('snackbar');
+                        $('#snackbar').addClass('snackError');
+                        $('#snackbar').addClass('show');
+                        setTimeout(function(){$('#snackbar').removeClass('show');}, 3000);
+                        return false;
+                    }
+
+                    inputs["contactName"] = $('input[name=contactName]').val();
+                    inputs["contactEmail"] = $('input[name=contactEmail]').val();
+                    inputs["contactPhone"] = $('input[name=contactPhone]').val();
+                    inputs["contactTitle"] = $('input[name=contactTitle]').val();
+
+                    $.getJSON('asyncInsert', inputs)
+                        .done(function(data, textStatus, jqXHR) {
+                            console.log(data.result);
+                            $('#snackbar').text(data.result);
+                            $('#snackbar').removeClass('snackError');
+                            $('#snackbar').addClass('snackbar');
+                            $('#snackbar').addClass('show');
+                            // alert(data.result);
+                            $('#data').each(function(){
+                                this.reset();
+                            });
+
+                            $("input[name=companyStatus]:checked").prop('checked', false);
+                            console.log($("input[name=companyStatus]:checked").val());
+
+                            $('#messageData').each(function(){
+                                this.reset();
+                            });
+
+                            $('#contactData').each(function(){
+                                this.reset();
+                            });
+                            $('#contactData').hide();
+                            $('#addContact2').show();
+                            setTimeout(function(){$('#snackbar').removeClass('show');}, 3000);
+                        })
+                        .fail(function(jqXHR, textStatus, errorThrown) {
+
+                            // log error to browser's console
+                            console.log(errorThrown.toString());
+                        });
+                });
+            });
+
+        </script>
+    </head>
+
+    <div class="contain">
+        <form id="data">
+            <h1>Company Information</h1>
+            <p>All company fields required.</p>
+            <div class="form-group">
+                <input autofocus class="form-control" name="companyName" placeholder="Company Name" type="text" id="compname" />
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="companyPhone" placeholder="Office Phone Number" type="text" id="phone" maxlength="14"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="companyStreet" placeholder="Address" type="text" id="newAddress"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="companyCity" placeholder="City" type="text" id="city"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="companyState" placeholder="state" type="text" id="state"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="companyZip" placeholder="zip" pattern="[0-9]{5}" type="text" min="0" id="zip"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="companyCountry" placeholder="Country" type="text" id="country"/>
+            </div>
+        </form><br>
+
+        <form>
+            <h1>Company Status</h1>
+            <div class="form-group" id="radio">
+                <label id="status">
+                    <input name="companyStatus" placeholder="Country" type="radio" id="status" value="Client"/>
+                    Client
+                </label><br>
+                <label id="status">
+                    <input name="companyStatus" placeholder="Country" type="radio" id="status" value="Prospect"/>
+                    Prospect
+                </label><br>
+            </div>
+        </form><br>
+
+        <form id="messageData">
+            <h1>Initial Message</h1>
+            <div class="form-group">
+                    <textarea class="form-control" name="companyMessage" rows="4" cols="50" id="message" placeholder="Enter brief message about the company here" ></textarea>
+            </div>
+        </form>
+
+
+        <form id="contactData">
+            <h1>Contact Information</h1>
+            <div class="form-group">
+                <input class="form-control" type="text" name="contactName" placeholder="Name"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" name="contactEmail" placeholder="Email"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" name="contactPhone" placeholder="Phone Number"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" name="contactTitle" placeholder="Position or Title"/>
+            </div>
+
+        </form>
+
+        <input class="btn btn-primary" id="addContact2" value="Add Contact" type="button">
+
+        <input class="btn btn-primary" id="submit" value="Submit" type="button">
+        <br><br><br><br><br><br><br>
+
+
+        <!-- The actual snackbar -->
+        <div id="snackbar" class="snackbar"></div>
+    </div>
+{% endblock %}

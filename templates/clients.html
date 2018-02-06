@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Clients
+{% endblock %}
+
+{% block main %}
+    <head>
+        <script>
+            $(document).ready(function() {
+                $("div[class='presenter']").each(function() {
+                    $(this).click(function(){
+                        $("div[name='additional']").each(function(){
+                           $(this).hide();
+                        });
+
+                        $('#present_'+$(this).attr('id')).show();
+
+                        var compId = $(this).attr('id');
+                        var buttonName = "addContact_" + compId;
+                        $('input[name=\"' + buttonName + '\"]').click(function(){
+                            console.log(compId);
+                            $('#contact_' + compId).show();
+                            $('input[name=\"' + buttonName + '\"]').hide();
+                        });
+                        $('#addNewContact_' + compId).click(function(){
+                            var inputs = {
+                                companyName : $('#divName_' + compId).text(),
+                                companyPhone : $('#divPhone_' + compId).text(),
+                                contactName : $('#contactName_' + compId).val(),
+                                contactEmail : $('#contactEmail_' + compId).val(),
+                                contactPhone : $('#contactPhone_' + compId).val(),
+                                contactTitle : $('#contactTitle_' + compId).val()
+                            };
+
+                            console.log(inputs);
+
+                            if($('input[name=contactName]').val() == null &&
+                                    $('input[name=contactEmail]').val() == null &&
+                                    $('input[name=contactPhone]').val() == null &&
+                                    $('input[name=contactTitle]').val() == null
+                                ) {
+                                    $('input[name=contactName]').addClass("required");
+                                    $('input[name=contactEmail]').addClass("required");
+                                    $('input[name=contactPhone]').addClass("required");
+                                    $('input[name=contactTitle]').addClass("required");
+                                }
+
+                            else {
+                                $.getJSON('contactInsert', inputs)
+                                    .done(function(data, textStatus, jqXHR) {
+                                        $('#contactForm_' + compId).each(function(){
+                                            this.reset();
+                                        });
+                                    })
+                                    .fail(function(jqXHR, textStatus, errorThrown) {
+                                        // log error to browser's console
+                                        console.log(errorThrown.toString());
+                                    });
+                            }
+                        });
+                        $('#addMess_' + compId).click(function(){
+                            var inputs = {
+                                companyName : $('#divName_' + compId).text(),
+                                companyPhone : $('#divPhone_' + compId).text(),
+                                newMessage : $('#mess_' + compId).val()
+                            };
+
+                            console.log(inputs);
+
+                            if ($('#mess_' + compId).text() == null || $('#mess_' + compId).text() == undefined){
+                                $('#mess_' + compId).addClass("required");
+                            } else {
+                                $.getJSON('messageInsert', inputs)
+                                    .done(function(data, textStatus, jqXHR) {
+                                        $('#mess_' + compId).val('');
+                                    })
+                                    .fail(function(jqXHR, textStatus, errorThrown) {
+                                        // log error to browser's console
+                                        console.log(errorThrown.toString());
+                                    });
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+    </head>
+
+
+    <form action="/clients" method="get">
+        <div class="contain">
+            <h1>Clients</h1>
+            {% for client in clients %}
+                <div class="presenter" id="{{client.comp_id}}">
+                    <div class="compData">
+                        <p id="name">{{client.name}}</p>
+                        <p id="address">{{client.address}}</p>
+                        <p id="cPhone">{{client.phone}}</p>
+                    </div>
+                    {% for message in client.message %}
+                        {% if message.comp_id == client.comp_id %}
+                            {% if message.mess_id == 0 %}
+                                <p id="lateMessage">
+                                    {{message.message}}
+                                </p>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    <div class="clicked" id="present_{{client.comp_id}}" name="additional">
+                        <div class="compData">
+                            {% for contact in client.contacts %}
+                                {% if contact.cont_id == client.comp_id %}
+                                    <p id="contactName">{{contact.name}}</p>
+                                    <p id="contactTitle">{{contact.title}}</p>
+                                    <p id="email">{{contact.email}}</p>
+                                    <p id="contactPhone">{{contact.phone}}</p>
+                                {% endif %}
+                            {% endfor %}
+                            <input class="btn btn-primary" id="addContact" name="addContact_{{client.comp_id}}" value="Add Contact/Message" type="button">
+                        </div>
+                        {% for message in client.message %}
+                            {% if message.comp_id == client.comp_id %}
+                                {% if message.mess_id == 0 %}
+                                {% else %}
+                                    <p class="clicked" id="lateMessage">
+                                        {{message.message}}
+                                    </p>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="clicked form" id="contact_{{client.comp_id}}">
+                            <form id="contactForm_{{client.comp_id}}">
+                                <h1>Contact Information</h1>
+                                <div class="form-group">
+                                    <input class="form-control" type="text" id="contactName_{{client.comp_id}}" name="contactName" placeholder="Name"/>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" type="text" id="contactEmail_{{client.comp_id}}" name="contactEmail" placeholder="Email"/>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" type="text" id="contactPhone_{{client.comp_id}}" name="contactPhone" placeholder="Phone Number"/>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" type="text" id="contactTitle_{{client.comp_id}}" name="contactTitle" placeholder="Position or Title"/>
+                                </div>
+                                <div class="clicked" id="divName_{{client.comp_id}}">{{client.name}}</div>
+                                <div class="clicked" id="divPhone_{{client.comp_id}}">{{client.phone}}</div>
+                                <input class="btn btn-primary" id="addNewContact_{{client.comp_id}}" value="Add Contact" type="button">
+                            </form>
+                            <div class="floatRight">
+                                <textarea class="form-control" id="mess_{{client.comp_id}}" rows="4" cols="50"  placeholder="Enter brief message here" ></textarea>
+                                <input class="btn btn-primary" id="addMess_{{client.comp_id}}" value="Add Message" type="button">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div><br>
+    </form>
+{% endblock %}

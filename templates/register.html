@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <head>
+        <script>
+            $(document).ready(function() {
+                $('#register').hide();
+
+                var user = false;
+                var pass1 = false;
+                var pass2 = false;
+
+                $('input[name="username').keyup(function() {
+                    if($('input[name="username').val().length > 6 &&
+                        $('input[name="username').val().indexOf(' ') == -1) {
+                            user = true;
+                            $('#valUserlen').css('color','#99ff99');
+                            $('#valUserContains').css('color','#99ff99');
+                        } else {
+                            user = false;
+                            $('#valUserlen').css('color','#8B0000');
+                            $('#valUserContains').css('color','#8B0000');
+                        }
+
+                    if(user == true &&
+                        pass1 == true &&
+                        $('input[name="newPassword').val() == $('input[name="password').val()) {
+                            $('#register').show();
+                    } else {
+                        $('#register').hide();
+                    }
+                });
+
+                $('input[name="password').keyup(function() {
+                    if($('input[name="password').val().length > 8 &&
+                        ($('input[name="password').val().match(/[a-z]/) &&
+                        $('input[name="password').val().match(/[A-Z]/) &&
+                        $('input[name="password').val().match(/\d/))) {
+                            pass1 = true;
+                            $('#valPassLen').css('color','#99ff99');
+                            $('#valPassContains').css('color','#99ff99');
+                        } else {
+                            pass1 = false;
+                            $('#valPassLen').css('color','#8B0000');
+                            $('#valPassContains').css('color','#8B0000');
+                        }
+
+                    if(user == true &&
+                        pass1 == true &&
+                        $('input[name="newPassword').val() == $('input[name="password').val()) {
+                            $('#register').show();
+                    } else {
+                        $('#register').hide();
+                    }
+                });
+
+                $('input[name="newPassword').keyup(function() {
+                    if($('input[name="newPassword').val() == $('input[name="password').val()) {
+                            pass2 = true;
+                            $('#valPassMatch').css('color','#99ff99');
+                        } else {
+                            pass2 = false;
+                            $('#valPassMatch').css('color','#8B0000');
+                        }
+
+                    if(user == true &&
+                        pass1 == true &&
+                        pass2 == true) {
+                            $('#register').show();
+                    } else {
+                        $('#register').hide();
+                    }
+                });
+            });
+        </script>
+    </head>
+
+
+    <div class="contain">
+        <div class="ValidationContainer">
+            <h3 class="validationHeader">User Account Requirements:</h3>
+            <p id="valUserlen" class="validation">Username must be greater than six characters long!</p>
+            <p id="valUserContains" class="validation">Username must not contain spaces!</p>
+            <p id="valPassLen" class="validation">Password must be greater than eight characters long!</p>
+            <p id="valPassContains" class="validation">Password must be contain at least one of each of the following: capitalized letter, lowercased letter, and number!</p>
+            <p id="valPassMatch" class="validation">Passwords must match!</p>
+        </div>
+
+        <form action="/register" method="post">
+            <div class="form-group">
+                <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="password" placeholder="Password" type="password"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="newPassword" placeholder="Confirm Password" type="password"/>
+            </div>
+            <button id="register" class="btn btn-primary" type="submit">Register</button>
+        </form>
+    </div>
+{% endblock %}
