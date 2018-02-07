@@ -582,14 +582,14 @@ def contactInsert():
         #                         phone=compPhone)
 
         # Checks if contact already exists
-        # dups = Contacts.query.filter_by(comp_id=company[0].comp_id, _or(name=contactName, email=contactEmail).first()
+        dups = Contacts.query.filter_by(comp_id=company[0].comp_id, name=contactName).first()
         # dups = db.execute("SELECT * FROM contacts WHERE comp_id = :comp AND (name = :name OR email = :email)",
         #                         comp=company[0]["comp_id"],
         #                         name=contactName,
         #                         email=contactEmail)
 
         # If contact is not a duplicate, then it is inserted
-        if(Contacts.query.filter_by(comp_id=company[0].comp_id, name=contactName).first() == None):
+        if(dups == None):
 
             # Inserts the new contact
             inCont = Contacts(company[0].comp_id,
