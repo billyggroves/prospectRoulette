@@ -23,8 +23,8 @@ db = SQLAlchemy(app)
 class Users(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.string(80), unique=True, nullable=False)
-    password = db.Column(db.string(200), unique=False, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(200), unique=False, nullable=False)
 
     def __init__(self, username, password):
         self.username = username
@@ -34,14 +34,14 @@ class Companies(db.Model):
 
     comp_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, unique=False, nullable=False)
-    name = db.Column(db.string(200), unique=False, nullable=False)
-    phone = db.Column(db.string(80), unique=False, nullable=False)
-    address = db.Column(db.string(200), unique=False, nullable=False)
-    city = db.Column(db.string(200), unique=False, nullable=False)
-    state = db.Column(db.string(200), unique=False, nullable=False)
-    zip = db.Column(db.string(80), unique=False, nullable=False)
-    country = db.Column(db.string(200), unique=False, nullable=False)
-    isClient = db.Column(db.string(10), unique=False, nullable=False)
+    name = db.Column(db.String(200), unique=False, nullable=False)
+    phone = db.Column(db.String(80), unique=False, nullable=False)
+    address = db.Column(db.String(200), unique=False, nullable=False)
+    city = db.Column(db.String(200), unique=False, nullable=False)
+    state = db.Column(db.String(200), unique=False, nullable=False)
+    zip = db.Column(db.String(80), unique=False, nullable=False)
+    country = db.Column(db.String(200), unique=False, nullable=False)
+    isClient = db.Column(db.String(10), unique=False, nullable=False)
     time = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __init__(self, comp_id, user_id, name,
@@ -64,10 +64,10 @@ class Contacts(db.Model):
 
     contact_id = db.Column(db.Integer, primary_key=True)
     comp_id = db.Column(db.Integer, unique=False, nullable=False)
-    name = db.Column(db.string(200), unique=False, nullable=False)
-    email = db.Column(db.string(80), unique=False, nullable=True)
-    phone = db.Column(db.string(80), unique=False, nullable=True)
-    title = db.Column(db.string(80), unique=False, nullable=True)
+    name = db.Column(db.String(200), unique=False, nullable=False)
+    email = db.Column(db.String(80), unique=False, nullable=True)
+    phone = db.Column(db.String(80), unique=False, nullable=True)
+    title = db.Column(db.String(80), unique=False, nullable=True)
 
     def __init__(self, contact_id, comp_id, name, email, phone, title):
         self.contact_id = contact_id
@@ -469,7 +469,7 @@ def asyncInsert():
             if item == None:
                 return jsonify(result="Must provide required information")
 
-            # Else, makes the item a string variable
+            # Else, makes the item a String variable
             str(item)
 
         # Checks if new company is a client or prospect
