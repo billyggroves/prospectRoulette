@@ -534,7 +534,7 @@ def asyncInsert():
         else:
 
             # Inserts the company's contact information
-            inCont = Contacts(comp_id=comp.comp_id, contactData[0], contactData[1], contactData[2], contactData[3])
+            inCont = Contacts(comp[0].comp_id, contactData[0], contactData[1], contactData[2], contactData[3])
             db.session.add(inCont)
             db.session.commit()
             # insert = db.execute("INSERT INTO contacts VALUES (NULL, :comp_id, :name, :email, :phone, :title)",
