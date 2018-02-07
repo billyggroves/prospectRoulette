@@ -494,8 +494,8 @@ def asyncInsert():
                             companyData[1],
                             companyData[2],
                             companyData[3],
-                            companyData[4]
-                            companyData[5]
+                            companyData[4],
+                            companyData[5],
                             companyData[6],
                             client)
         db.session.add(inComp)
