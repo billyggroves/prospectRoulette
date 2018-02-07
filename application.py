@@ -731,7 +731,7 @@ def reset():
             return apology("New passwords must match", 403)
 
         # Updates the user's password to the new password
-        rows.password = generate_password_hash(request.form.get("newPassword")
+        rows.password = generate_password_hash(request.form.get("newPassword"))
         db.session.commit()
         # updatePass = db.execute("UPDATE users SET password = :newPass WHERE user_id = :user",
         #                             newPass=generate_password_hash(request.form.get("newPassword")),
