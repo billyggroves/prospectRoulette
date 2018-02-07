@@ -589,7 +589,7 @@ def contactInsert():
         #                         email=contactEmail)
 
         # If contact is not a duplicate, then it is inserted
-        if(len(dups) == 0):
+        if(dups == None):
 
             # Inserts the new contact
             inCont = Contacts(company[0].comp_id,
