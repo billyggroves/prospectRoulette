@@ -22,9 +22,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 class Users(db.Model):
 
-    id = db.column(db.Integer, primary_key=True)
-    username = db.column(db.string(80), unique=True, nullable=False)
-    password = db.column(db.string(200), unique=False, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.string(80), unique=True, nullable=False)
+    password = db.Column(db.string(200), unique=False, nullable=False)
 
     def __init__(self, username, password):
         self.username = username
@@ -32,17 +32,17 @@ class Users(db.Model):
 
 class Companies(db.Model):
 
-    comp_id = db.column(db.Integer, primary_key=True)
-    user_id = db.column(db.Integer, unique=False, nullable=False)
-    name = db.column(db.string(200), unique=False, nullable=False)
-    phone = db.column(db.string(80), unique=False, nullable=False)
-    address = db.column(db.string(200), unique=False, nullable=False)
-    city = db.column(db.string(200), unique=False, nullable=False)
-    state = db.column(db.string(200), unique=False, nullable=False)
-    zip = db.column(db.string(80), unique=False, nullable=False)
-    country = db.column(db.string(200), unique=False, nullable=False)
-    isClient = db.column(db.string(10), unique=False, nullable=False)
-    time = db.column(db.DateTime, unique=False, nullable=False)
+    comp_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, unique=False, nullable=False)
+    name = db.Column(db.string(200), unique=False, nullable=False)
+    phone = db.Column(db.string(80), unique=False, nullable=False)
+    address = db.Column(db.string(200), unique=False, nullable=False)
+    city = db.Column(db.string(200), unique=False, nullable=False)
+    state = db.Column(db.string(200), unique=False, nullable=False)
+    zip = db.Column(db.string(80), unique=False, nullable=False)
+    country = db.Column(db.string(200), unique=False, nullable=False)
+    isClient = db.Column(db.string(10), unique=False, nullable=False)
+    time = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __init__(self, comp_id, user_id, name,
                 phone, address, city, state,
@@ -62,12 +62,12 @@ class Companies(db.Model):
 
 class Contacts(db.Model):
 
-    contact_id = db.column(db.Integer, primary_key=True)
-    comp_id = db.column(db.Integer, unique=False, nullable=False)
-    name = db.column(db.string(200), unique=False, nullable=False)
-    email = db.column(db.string(80), unique=False, nullable=True)
-    phone = db.column(db.string(80), unique=False, nullable=True)
-    title = db.column(db.string(80), unique=False, nullable=True)
+    contact_id = db.Column(db.Integer, primary_key=True)
+    comp_id = db.Column(db.Integer, unique=False, nullable=False)
+    name = db.Column(db.string(200), unique=False, nullable=False)
+    email = db.Column(db.string(80), unique=False, nullable=True)
+    phone = db.Column(db.string(80), unique=False, nullable=True)
+    title = db.Column(db.string(80), unique=False, nullable=True)
 
     def __init__(self, contact_id, comp_id, name, email, phone, title):
         self.contact_id = contact_id
@@ -80,10 +80,10 @@ class Contacts(db.Model):
 
 class Messages(db.Model):
 
-    message_id = db.column(db.Integer, primary_key=True)
-    comp_id = db.column(db.Integer, unique=False, nullable=False)
-    message = db.column(db.Text, unique=False, nullable=False)
-    time = db.column(db.DateTime, unique=False, nullable=False)
+    message_id = db.Column(db.Integer, primary_key=True)
+    comp_id = db.Column(db.Integer, unique=False, nullable=False)
+    message = db.Column(db.Text, unique=False, nullable=False)
+    time = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __init__(self, message_id, comp_id, message, email):
         self.message_id = message_id
