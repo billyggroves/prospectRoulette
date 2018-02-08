@@ -256,7 +256,7 @@ def login():
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = rows.user_id
+        session["user_id"] = rows.id
 
         # Redirect user to home page
         return redirect("/")
@@ -333,7 +333,7 @@ def register():
         #                   username=request.form.get("username"))
 
         # Remember which user has logged in
-        session["user_id"] = rows.user_id
+        session["user_id"] = rows.id
 
         # Redirect user to home page
         return redirect("/")
@@ -715,7 +715,7 @@ def reset():
         user_id = session.get("user_id")
 
         # Query database for username
-        rows = Users.query.filter_by(user_id=user_id).first()
+        rows = Users.query.filter_by(id=user_id).first()
         # rows = db.execute("SELECT * FROM users WHERE user_id = :user",
         #                   user=user_id)
 
