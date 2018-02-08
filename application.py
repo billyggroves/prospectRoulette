@@ -142,9 +142,11 @@ def index():
         #                         client='f')
 
         if proComp != None:
+            for comp in proComp:
+                companies.append(Company(comp.comp_id, comp.name, comp.address, comp.phone, None, None))
 
             # If user has 10 or less prospects, then the list pulls all ten to call for the user
-            if len(proComp) <= 10:
+            if len(companies) <= 10:
 
                 # Loops through the list of prospects
                 for comp in proComp:
@@ -178,11 +180,8 @@ def index():
                 # Loops through process the number of times count is equal to
                 for i in range(count):
 
-                    for comp in proComp:
-                        companies.append(Company(comp.comp_id, comp.name, comp.address, comp.phone, None, None))
-
                     # Generates random int between 0 and the number of prospects the user has
-                    rand = random.randint(0,len(proComp)-1)
+                    rand = random.randint(0,len(companies)-1)
 
                     # Pulls the prospect info at the random position
                     comp = companies[rand]
@@ -252,7 +251,7 @@ def login():
         #                   username=request.form.get("username"))
 
         # Ensure username exists and password is correct
-        if ((rows == None) or (len(rows) != 1)) or not check_password_hash(rows.password, request.form.get("password")):
+        if rows == None or not check_password_hash(rows.password, request.form.get("password")):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
@@ -720,7 +719,7 @@ def reset():
         #                   user=user_id)
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows.password, request.form.get("password")):
+        if rows == None or not check_password_hash(rows.password, request.form.get("password")):
             return apology("invalid username and/or password", 403)
 
         # Checks if password if longer than eight chars long
