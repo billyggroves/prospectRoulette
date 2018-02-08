@@ -128,8 +128,10 @@ def index():
         # Var's are initiated
         current = datetime.now()
         print(current)
+        companies = []
         prospects = []
         contacts = []
+        messages = []
         count = 10
         numId = 0
 
@@ -153,7 +155,7 @@ def index():
                     name = comp.name
                     address = comp.city + ", " + comp.state
                     phone = comp.phone
-                    messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
+                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
                     # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
                     #                         comp=comp["comp_id"])
                     conts = Contacts.query.filter_by(comp_id=comp.comp_id)
@@ -164,6 +166,9 @@ def index():
                     for cont in conts:
                         contacts.append(Contact(newid, cont.name, cont.title, cont.phone, cont.email))
 
+                    for mess in message:
+                        messages.append(Message(mess.comp_id, mess.message_id, mess.message, mess.time))
+
                     # Adds the Company Object to the list of prospects
                     prospects.append(Company(newid, name, address, phone, messages[0].message, contacts))
 
@@ -173,17 +178,22 @@ def index():
                 # Loops through process the number of times count is equal to
                 for i in range(count):
 
+                    for comp in proComp:
+                        companies.append(Company(comp.comp_id, comp.name, comp.address, comp.phone, None, None))
+
                     # Generates random int between 0 and the number of prospects the user has
                     rand = random.randint(0,len(proComp)-1)
 
                     # Pulls the prospect info at the random position
-                    comp = proComp[rand].comp_id
-                    messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
+                    comp = companies[rand]
+                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
+                    for mess in message:
+                        messages.append(Message(mess.comp_id, mess.message_id, mess.message, mess.time))
                     # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
                     #                         comp=comp)
 
                     # If the prospect had been contacted within seven days, then it will reset the loop
-                    if (datetime.strptime(proComp[rand].time, '%Y-%m-%d %H:%M:%S') > (current - timedelta(days=7))) and (len(messages) > 1):
+                    if (datetime.strptime(comp.time, '%Y-%m-%d %H:%M:%S') > (current - timedelta(days=7))) and (len(messages) > 1):
                         i = i - 1
 
                     # If the prospect hasn't been contacted in the last 7 days then that prospects info is pulled
@@ -192,9 +202,9 @@ def index():
                         # Pulls prospect's info and makes it a company object
                         numId = numId + 1
                         newid = numId
-                        name = proComp[rand].name
-                        address = proComp[rand].city + ", " + proComp[rand].state
-                        phone = proComp[rand].phone
+                        name = comp.name
+                        address = comp.city + ", " + comp.state
+                        phone = comp.phone
                         message = messages[0].message
                         conts = Contacts.query.filter_by(comp_id=comp.comp_id)
                         # conts = db.execute("SELECT * FROM contacts WHERE comp_id = :comp",
@@ -242,11 +252,11 @@ def login():
         #                   username=request.form.get("username"))
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0].password, request.form.get("password")):
+        if ((rows == None) or (len(rows) != 1)) or not check_password_hash(rows.password, request.form.get("password")):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = rows[0].user_id
+        session["user_id"] = rows.user_id
 
         # Redirect user to home page
         return redirect("/")
@@ -310,7 +320,7 @@ def register():
             return apology("Username already exists", 403)
 
         # Inserts new user info into db
-        user = Users(request.form.get("username"), request.form.get("password"))
+        user = Users(request.form.get("username"), generate_password_hash(request.form.get("password")))
         db.session.add(user)
         db.session.commit()
         # user = db.execute("INSERT INTO users (username, password) VALUES (:user, :password)",
@@ -323,7 +333,7 @@ def register():
         #                   username=request.form.get("username"))
 
         # Remember which user has logged in
-        session["user_id"] = rows[0].user_id
+        session["user_id"] = rows.user_id
 
         # Redirect user to home page
         return redirect("/")
@@ -541,7 +551,7 @@ def asyncInsert():
         else:
 
             # Inserts the company's contact information
-            inCont = Contacts(comp[0].comp_id, contactData[0], contactData[1], contactData[2], contactData[3])
+            inCont = Contacts(comp.comp_id, contactData[0], contactData[1], contactData[2], contactData[3])
             db.session.add(inCont)
             db.session.commit()
             # insert = db.execute("INSERT INTO contacts VALUES (NULL, :comp_id, :name, :email, :phone, :title)",
@@ -579,13 +589,13 @@ def contactInsert():
         contactTitle = request.args.get("contactTitle")
 
         # Pulls the information of the company that the contact is being inserted to
-        company = Companies.query.filter_by(name=compName, phone=compPhone).all()
+        company = Companies.query.filter_by(name=compName, phone=compPhone).first()
         # company = db.execute("SELECT * FROM companies WHERE name = :name AND phone = :phone",
         #                         name=compName,
         #                         phone=compPhone)
 
         # Checks if contact already exists
-        dups = Contacts.query.filter_by(comp_id=company[0].comp_id, name=contactName).first()
+        dups = Contacts.query.filter_by(comp_id=company.comp_id, name=contactName).first()
         # dups = db.execute("SELECT * FROM contacts WHERE comp_id = :comp AND (name = :name OR email = :email)",
         #                         comp=company[0]["comp_id"],
         #                         name=contactName,
@@ -595,7 +605,7 @@ def contactInsert():
         if(dups == None):
 
             # Inserts the new contact
-            inCont = Contacts(company[0].comp_id,
+            inCont = Contacts(company.comp_id,
                                 contactName,
                                 contactEmail,
                                 contactPhone,
@@ -638,13 +648,13 @@ def messageInsert():
         newMessage = request.args.get("newMessage")
 
         # Pulls the information of the company that the message is being inserted to
-        company = Companies.query.filter_by(name=compName, phone=compPhone)
+        company = Companies.query.filter_by(name=compName, phone=compPhone).first()
         # company = db.execute("SELECT * FROM companies WHERE name = :name AND phone = :phone",
         #                         name=compName,
         #                         phone=compPhone)
 
         # Checks if message already exists
-        dups = Messages.query.self.filter_by(comp_id=company[0].comp_id, message=newMessage)
+        dups = Messages.query.self.filter_by(comp_id=company[0].comp_id, message=newMessage).first()
         # dups = db.execute("SELECT * FROM messages WHERE comp_id = :comp AND message = :message",
         #                         comp=company[0]["comp_id"],
         #                         message=newMessage)
@@ -653,7 +663,7 @@ def messageInsert():
         if(dups == None):
 
             # Inserts the new message
-            inMess = Messages(company[0].comp_id, newMessage)
+            inMess = Messages(company.comp_id, newMessage)
             db.session.add(inMess)
             db.session.commit()
             # insertMessage = db.execute("INSERT INTO messages (comp_id, message) VALUES (:comp_id, :message)",
@@ -710,7 +720,7 @@ def reset():
         #                   user=user_id)
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0].password, request.form.get("password")):
+        if len(rows) != 1 or not check_password_hash(rows.password, request.form.get("password")):
             return apology("invalid username and/or password", 403)
 
         # Checks if password if longer than eight chars long
