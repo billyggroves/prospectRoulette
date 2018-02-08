@@ -1,6 +1,6 @@
 import csv
 import urllib.request
-
+import re
 from flask import redirect, render_template, request, session
 from functools import wraps
 
@@ -45,11 +45,11 @@ def hasCaps(inputString):
     """Checks in str contains copitalized character"""
 
     # returns true if str contains copitalized character
-    return bool(re.search(r'/[A-Z]/', inputString))
+    return bool(re.search('[A-Z]+', inputString))
 
 
 def hasLower(inputString):
     """Checks in str contains lowercased character"""
 
     # returns true if str contains lowercased character
-    return bool(re.search(r'/[a-z]/', inputString))
+    return bool(re.search('[a-z]+', inputString))

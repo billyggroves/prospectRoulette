@@ -278,6 +278,8 @@ def register():
             return apology("Password must contain at least one number", 403)
 
         # Checks if password contains capitalized character
+        print(request.form.get("newPassword"))
+        print(hasCaps(request.form.get("newPassword")))
         if hasCaps(request.form.get("newPassword")) == False:
             return apology("Password must contain at least one capitalized character", 403)
 
