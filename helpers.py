@@ -35,21 +35,21 @@ def login_required(f):
 
 
 def hasNumbers(inputString):
-    """Checks in str contains  a number"""
+    """Checks if str contains  a number"""
 
     # returns true if str contains number
     return bool(re.search(r'\d', inputString))
 
 
 def hasCaps(inputString):
-    """Checks in str contains copitalized character"""
+    """Checks if str contains copitalized character"""
 
     # returns true if str contains copitalized character
     return bool(re.search('[A-Z]+', inputString))
 
 
 def hasLower(inputString):
-    """Checks in str contains lowercased character"""
+    """Checks if str contains lowercased character"""
 
     # returns true if str contains lowercased character
     return bool(re.search('[a-z]+', inputString))

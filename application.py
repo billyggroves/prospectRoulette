@@ -506,14 +506,17 @@ def asyncInsert():
             return jsonify(result="Company Already exists")
 
         # Inserts the new company into the user's database
-        inComp = Companies(userId, companyData[0],
+        inComp = Companies(None,
+                            userId,
+                            companyData[0],
                             companyData[1],
                             companyData[2],
                             companyData[3],
                             companyData[4],
                             companyData[5],
                             companyData[6],
-                            client)
+                            client,
+                            None)
         db.session.add(inComp)
         db.session.commit()
         # insert = db.execute("""INSERT INTO companies (user_id, name, phone, address, city, state, zip, country, isclient)
