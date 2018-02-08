@@ -139,61 +139,23 @@ def index():
         #                         user=user,
         #                         client='f')
 
-        # If user has 10 or less prospects, then the list pulls all ten to call for the user
-        if len(proComp) <= 10:
+        if proComp != None:
 
-            # Loops through the list of prospects
-            for comp in proComp:
+            # If user has 10 or less prospects, then the list pulls all ten to call for the user
+            if len(proComp) <= 10:
 
-                # Creates company object info for each prospect
-                numId = numId + 1
-                newid = numId
-                name = comp.name
-                address = comp.city + ", " + comp.state
-                phone = comp.phone
-                messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
-                # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
-                #                         comp=comp["comp_id"])
-                conts = Contacts.query.filter_by(comp_id=comp.comp_id)
-                # conts = db.execute("SELECT * FROM contacts WHERE comp_id = :comp",
-                #                         comp=comp["comp_id"])
+                # Loops through the list of prospects
+                for comp in proComp:
 
-                # Loops through contacts adding contact objects to add to list of contacts for Company Object
-                for cont in conts:
-                    contacts.append(Contact(newid, cont.name, cont.title, cont.phone, cont.email))
-
-                # Adds the Company Object to the list of prospects
-                prospects.append(Company(newid, name, address, phone, messages[0].message, contacts))
-
-        # If the user has more than 10 prospects, then the ten prospects are randomly chosen
-        else:
-
-            # Loops through process the number of times count is equal to
-            for i in range(count):
-
-                # Generates random int between 0 and the number of prospects the user has
-                rand = random.randint(0,len(proComp)-1)
-
-                # Pulls the prospect info at the random position
-                comp = proComp[rand].comp_id
-                messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
-                # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
-                #                         comp=comp)
-
-                # If the prospect had been contacted within seven days, then it will reset the loop
-                if (datetime.strptime(proComp[rand].time, '%Y-%m-%d %H:%M:%S') > (current - timedelta(days=7))) and (len(messages) > 1):
-                    i = i - 1
-
-                # If the prospect hasn't been contacted in the last 7 days then that prospects info is pulled
-                else:
-
-                    # Pulls prospect's info and makes it a company object
+                    # Creates company object info for each prospect
                     numId = numId + 1
                     newid = numId
-                    name = proComp[rand].name
-                    address = proComp[rand].city + ", " + proComp[rand].state
-                    phone = proComp[rand].phone
-                    message = messages[0].message
+                    name = comp.name
+                    address = comp.city + ", " + comp.state
+                    phone = comp.phone
+                    messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
+                    # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
+                    #                         comp=comp["comp_id"])
                     conts = Contacts.query.filter_by(comp_id=comp.comp_id)
                     # conts = db.execute("SELECT * FROM contacts WHERE comp_id = :comp",
                     #                         comp=comp["comp_id"])
@@ -203,10 +165,53 @@ def index():
                         contacts.append(Contact(newid, cont.name, cont.title, cont.phone, cont.email))
 
                     # Adds the Company Object to the list of prospects
-                    prospects.append(Company(newid, name, address, phone, message, contacts))
+                    prospects.append(Company(newid, name, address, phone, messages[0].message, contacts))
 
-        # returns the template with passed in list of prospects
-        return render_template("home.html", prospects=prospects)
+            # If the user has more than 10 prospects, then the ten prospects are randomly chosen
+            else:
+
+                # Loops through process the number of times count is equal to
+                for i in range(count):
+
+                    # Generates random int between 0 and the number of prospects the user has
+                    rand = random.randint(0,len(proComp)-1)
+
+                    # Pulls the prospect info at the random position
+                    comp = proComp[rand].comp_id
+                    messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
+                    # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
+                    #                         comp=comp)
+
+                    # If the prospect had been contacted within seven days, then it will reset the loop
+                    if (datetime.strptime(proComp[rand].time, '%Y-%m-%d %H:%M:%S') > (current - timedelta(days=7))) and (len(messages) > 1):
+                        i = i - 1
+
+                    # If the prospect hasn't been contacted in the last 7 days then that prospects info is pulled
+                    else:
+
+                        # Pulls prospect's info and makes it a company object
+                        numId = numId + 1
+                        newid = numId
+                        name = proComp[rand].name
+                        address = proComp[rand].city + ", " + proComp[rand].state
+                        phone = proComp[rand].phone
+                        message = messages[0].message
+                        conts = Contacts.query.filter_by(comp_id=comp.comp_id)
+                        # conts = db.execute("SELECT * FROM contacts WHERE comp_id = :comp",
+                        #                         comp=comp["comp_id"])
+
+                        # Loops through contacts adding contact objects to add to list of contacts for Company Object
+                        for cont in conts:
+                            contacts.append(Contact(newid, cont.name, cont.title, cont.phone, cont.email))
+
+                        # Adds the Company Object to the list of prospects
+                        prospects.append(Company(newid, name, address, phone, message, contacts))
+
+            # returns the template with passed in list of prospects
+            return render_template("home.html", prospects=prospects)
+
+        else:
+            return render_template("home.html", prospects=prospects)
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -301,7 +306,7 @@ def register():
         #                   username=request.form.get("username"))
 
         # Ensure username exists and password is correct
-        if len(rows) != 0:
+        if rows != None:
             return apology("Username already exists", 403)
 
         # Inserts new user info into db
@@ -488,7 +493,7 @@ def asyncInsert():
         #                         name = companyData[0])
 
         # If the new company is a duplicate, then return and do not insert
-        if len(checkDup) > 0:
+        if checkDup != None:
             return jsonify(result="Company Already exists")
 
         # Inserts the new company into the user's database
@@ -645,7 +650,7 @@ def messageInsert():
         #                         message=newMessage)
 
         # If message is not a duplicate, then it is inserted
-        if(len(dups) == 0):
+        if(dups == None):
 
             # Inserts the new message
             inMess = Messages(company[0].comp_id, newMessage)
