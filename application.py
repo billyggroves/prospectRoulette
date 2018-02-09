@@ -20,6 +20,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
+
 class Users(db.Model):
 
     user_id = db.Column(db.Integer, primary_key=True)
@@ -121,6 +122,7 @@ def index():
 
     # Gets user id
     user = session.get("user_id")
+    print(user)
 
     # User reached route via POST (as by submitting a form via POST) and user is logged in
     if request.method == "POST" or not user == None:
@@ -249,6 +251,8 @@ def login():
         rows = Users.query.filter_by(username=request.form.get("username")).first()
         # rows = db.execute("SELECT * FROM users WHERE username = :username",
         #                   username=request.form.get("username"))
+
+        print("LOGIN............ " + rows.user_id)
 
         # Ensure username exists and password is correct
         if rows == None or not check_password_hash(rows.password, request.form.get("password")):
