@@ -337,6 +337,7 @@ def register():
 
         # Remember which user has logged in
         session["user_id"] = rows.user_id
+        print("REGISTER.............. " + str(rows.user_id))
 
         # Redirect user to home page
         return redirect("/")
@@ -356,6 +357,8 @@ def prospects():
 
         # Gets user's id
         user = session.get("user_id")
+
+        print("Prospects............... " + str(user))
 
         # Grabs the user's owned stocks
         companies = Companies.query.filter_by(user_id=user, isClient='f').all()
@@ -408,6 +411,8 @@ def clients():
 
         # Gets user's id
         user = session.get("user_id")
+
+        print("Clients............... " + str(user))
 
         # Grabs the user's owned stocks
         companies = Companies.query.filter_by(user_id=user, isClient='t')
@@ -498,6 +503,7 @@ def asyncInsert():
 
         # Gets user's id
         userId = session.get("user_id")
+        print("AsyncInsert............... " + str(user))
 
         # Pulls any company with matching names under that user
         checkDup = Companies.query.filter_by(user_id=userId, name=companyData[0]).first()
@@ -586,6 +592,8 @@ def contactInsert():
         # Grabs the user's id
         userId = session.get("user_id")
 
+        print("Prospects............... " + str(userId))
+
         # Pulls info provided by javascript object
         compName = request.args.get("companyName")
         compPhone = request.args.get("companyPhone")
@@ -647,6 +655,8 @@ def messageInsert():
 
         # Grabs the user's id
         userId = session.get("user_id")
+
+        print("MessageInsert............... " + str(user))
 
         # Pulls info provided by javascript object
         compName = request.args.get("companyName")
@@ -719,6 +729,8 @@ def reset():
 
         # Gets user's id
         user_id = session.get("user_id")
+
+        print("Reset............... " + str(user))
 
         # Query database for username
         rows = Users.query.filter_by(user_id=user_id).first()
