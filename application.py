@@ -252,7 +252,7 @@ def login():
         # rows = db.execute("SELECT * FROM users WHERE username = :username",
         #                   username=request.form.get("username"))
 
-        print("LOGIN............ " + rows.user_id)
+        print("LOGIN............ " + str(rows.user_id))
 
         # Ensure username exists and password is correct
         if rows == None or not check_password_hash(rows.password, request.form.get("password")):
