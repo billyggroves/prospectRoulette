@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 
 # Configure application
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = 'AfjkslaJKFLfd/afdsajf@kfl;asla'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -339,7 +339,7 @@ def register():
         #                   username=request.form.get("username"))
 
         # Remember which user has logged in
-        session.user_id = rows.user_id
+        session["user_id"] = rows.user_id
         print("REGISTER.............. " + str(rows.user_id))
 
         # Redirect user to home page
