@@ -506,7 +506,7 @@ def asyncInsert():
 
         # Gets user's id
         userId = session.get("user_id")
-        print("AsyncInsert............... " + str(user))
+        print("AsyncInsert............... " + str(userId))
 
         # Pulls any company with matching names under that user
         checkDup = Companies.query.filter_by(user_id=userId, name=companyData[0]).first()
