@@ -160,7 +160,7 @@ def index():
                     name = comp.name
                     address = comp.city + ", " + comp.state
                     phone = comp.phone
-                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted.desc())
+                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted).desc()
                     # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
                     #                         comp=comp["comp_id"])
                     conts = Contacts.query.filter_by(comp_id=comp.comp_id)
