@@ -10,7 +10,7 @@ from company import Company
 from contact import Contact
 from message import Message
 from helpers import apology, login_required, hasNumbers, hasCaps, hasLower
-
+import time
 import random
 from datetime import datetime, timedelta
 
@@ -509,7 +509,8 @@ def asyncInsert():
         print("AsyncInsert............... " + str(userId))
 
         # Gets timestamp
-        time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        stamp = time.time()
+        time = datetime.datetime.fromtimestamp(stamp).strftime('%Y-%m-%d %H:%M:%S')
 
         # Pulls any company with matching names under that user
         checkDup = Companies.query.filter_by(user_id=userId, name=companyData[0]).first()
