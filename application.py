@@ -724,7 +724,7 @@ def reset():
         # Gets user's id
         user_id = session.get("user_id")
 
-        print("Reset............... " + str(user))
+        print("Reset............... " + str(user_id))
 
         # Query database for username
         rows = Users.query.filter_by(user_id=user_id).first()
