@@ -1,5 +1,5 @@
 import os
-from flask_sqlalchemy import SQLAlchemy, desc
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc
 from flask_session import Session
 from tempfile import mkdtemp
