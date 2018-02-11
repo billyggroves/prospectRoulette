@@ -160,7 +160,7 @@ def index():
                     name = comp.name
                     address = comp.city + ", " + comp.state
                     phone = comp.phone
-                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted).desc()
+                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(Messages.timeInserted).desc()
                     # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
                     #                         comp=comp["comp_id"])
                     conts = Contacts.query.filter_by(comp_id=comp.comp_id)
@@ -188,7 +188,7 @@ def index():
 
                     # Pulls the prospect info at the random position
                     comp = companies[rand]
-                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted.desc())
+                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(Messages.timeInserted).desc()
                     for mess in message:
                         messages.append(Message(mess.comp_id, mess.message_id, mess.message, mess.timeInserted))
                     # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
@@ -383,7 +383,7 @@ def prospects():
             address = comp.address + ", " + comp.city + ", " + comp.state + " " + comp.zip
             phone = comp.phone
             messId = 0
-            messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted.desc())
+            messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(Messages.timeInserted).desc()
             # messages = db.execute("SELECT * FROM messages WHERE comp_id = :comp ORDER BY time DESC",
             #                         comp=comp["comp_id"])
             conts = Contacts.query.filter_by(comp_id=comp.comp_id).all()
@@ -438,7 +438,7 @@ def clients():
             address = comp.address + ", " + comp.city + ", " + comp.state + " " + comp.zip
             phone = comp.phone
             messId = 0
-            messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted.desc())
+            messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(Messages.timeInserted).desc()
             # messages = db.execute("SELECT * FROM messages WHERE comp_id = :comp ORDER BY time DESC",
             #                         comp=comp["comp_id"])
             conts = Contacts.query.filter_by(comp_id=comp.comp_id).all()
