@@ -509,8 +509,7 @@ def asyncInsert():
         print("AsyncInsert............... " + str(userId))
 
         # Gets timestamp
-        stamp = time.time()
-        finalStamp = datetime.datetime.fromtimestamp(stamp).strftime('%Y-%m-%d %H:%M:%S')
+        finalStamp = datetime.now()
 
         # Pulls any company with matching names under that user
         checkDup = Companies.query.filter_by(user_id=userId, name=companyData[0]).first()
