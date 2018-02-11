@@ -589,7 +589,7 @@ def contactInsert():
         # Grabs the user's id
         userId = session.get("user_id")
 
-        print("Prospects............... " + str(userId))
+        print("contactInesert............... " + str(userId))
 
         # Pulls info provided by javascript object
         compName = request.args.get("companyName")
@@ -616,11 +616,7 @@ def contactInsert():
         if(dups == None):
 
             # Inserts the new contact
-            inCont = Contacts(company.comp_id,
-                                contactName,
-                                contactEmail,
-                                contactPhone,
-                                contactTitle)
+            inCont = Contacts(None, company.comp_id, contactName, contactEmail, contactPhone, contactTitle)
             db.session.add(inCont)
             db.session.commit()
             # insertContact = db.execute("INSERT INTO contacts VALUES (NULL, :comp_id, :name, :email, :phone, :title)",
@@ -676,7 +672,8 @@ def messageInsert():
         if(dups == None):
 
             # Inserts the new message
-            inMess = Messages(company.comp_id, newMessage)
+            finalStamp = datetime.now()
+            inMess = Messages(None, company.comp_id, newMessage, finalStamp)
             db.session.add(inMess)
             db.session.commit()
             # insertMessage = db.execute("INSERT INTO messages (comp_id, message) VALUES (:comp_id, :message)",
