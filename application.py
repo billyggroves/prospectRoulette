@@ -653,7 +653,7 @@ def messageInsert():
         # Grabs the user's id
         userId = session.get("user_id")
 
-        print("MessageInsert............... " + str(user))
+        print("MessageInsert............... " + str(userId))
 
         # Pulls info provided by javascript object
         compName = request.args.get("companyName")
