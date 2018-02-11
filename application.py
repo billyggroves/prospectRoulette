@@ -1,5 +1,6 @@
 import os
 from flask_sqlalchemy import SQLAlchemy, desc
+from sqlalchemy import desc
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions
