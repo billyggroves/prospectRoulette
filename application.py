@@ -48,7 +48,7 @@ class Companies(db.Model):
 
     def __init__(self, comp_id, user_id, name,
                 phone, address, city, state,
-                zip, country, isClient, time):
+                zip, country, isClient, timeCreated):
         self.comp_id = comp_id
         self.user_id = user_id
         self.name = name
@@ -87,7 +87,7 @@ class Messages(db.Model):
     message = db.Column(db.Text, unique=False, nullable=False)
     timeInserted = db.Column(db.DateTime, unique=False, nullable=False)
 
-    def __init__(self, message_id, comp_id, message, email):
+    def __init__(self, message_id, comp_id, message, timeInserted):
         self.message_id = message_id
         self.comp_id = comp_id
         self.message = message
@@ -510,7 +510,7 @@ def asyncInsert():
 
         # Gets timestamp
         stamp = time.time()
-        time = datetime.datetime.fromtimestamp(stamp).strftime('%Y-%m-%d %H:%M:%S')
+        finalStamp = datetime.datetime.fromtimestamp(stamp).strftime('%Y-%m-%d %H:%M:%S')
 
         # Pulls any company with matching names under that user
         checkDup = Companies.query.filter_by(user_id=userId, name=companyData[0]).first()
@@ -523,7 +523,7 @@ def asyncInsert():
             return jsonify(result="Company Already exists")
 
         # Inserts the new company into the user's database
-        inComp = Companies(None, userId, companyData[0], companyData[1], companyData[2], companyData[3], companyData[4], companyData[5], companyData[6], client, time)
+        inComp = Companies(None, userId, companyData[0], companyData[1], companyData[2], companyData[3], companyData[4], companyData[5], companyData[6], client, finalStamp)
         db.session.add(inComp)
         db.session.commit()
         # insert = db.execute("""INSERT INTO companies (user_id, name, phone, address, city, state, zip, country, isclient)
@@ -545,7 +545,7 @@ def asyncInsert():
         #                         name = companyData[0])
 
         # Inserts provided message into the new company's message pool
-        inMess = Messages(comp.comp_id, companyData[8], time)
+        inMess = Messages(comp.comp_id, companyData[8], finalStamp)
         db.session.add(inMess)
         db.session.commit()
         # inMess = db.execute("INSERT INTO messages (comp_id, message) VALUES (:comp_id, :message)",
