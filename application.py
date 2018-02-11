@@ -44,7 +44,7 @@ class Companies(db.Model):
     zip = db.Column(db.String(80), unique=False, nullable=False)
     country = db.Column(db.String(200), unique=False, nullable=False)
     isClient = db.Column(db.String(10), unique=False, nullable=False)
-    time = db.Column(db.DateTime, unique=False, nullable=False)
+    timeCreated = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __init__(self, comp_id, user_id, name,
                 phone, address, city, state,
@@ -59,7 +59,7 @@ class Companies(db.Model):
         self.zip = zip
         self.country = country
         self.isClient = isClient
-        self.time = time
+        self.timeCreated = timeCreated
 
 
 class Contacts(db.Model):
@@ -85,13 +85,13 @@ class Messages(db.Model):
     message_id = db.Column(db.Integer, primary_key=True)
     comp_id = db.Column(db.Integer, unique=False, nullable=False)
     message = db.Column(db.Text, unique=False, nullable=False)
-    time = db.Column(db.DateTime, unique=False, nullable=False)
+    timeInserted = db.Column(db.DateTime, unique=False, nullable=False)
 
     def __init__(self, message_id, comp_id, message, email):
         self.message_id = message_id
         self.comp_id = comp_id
         self.message = message
-        self.time = time
+        self.timeInserted = timeInserted
 
 JSGlue(app)
 
@@ -160,7 +160,7 @@ def index():
                     name = comp.name
                     address = comp.city + ", " + comp.state
                     phone = comp.phone
-                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
+                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted.desc())
                     # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
                     #                         comp=comp["comp_id"])
                     conts = Contacts.query.filter_by(comp_id=comp.comp_id)
@@ -172,7 +172,7 @@ def index():
                         contacts.append(Contact(newid, cont.name, cont.title, cont.phone, cont.email))
 
                     for mess in message:
-                        messages.append(Message(mess.comp_id, mess.message_id, mess.message, mess.time))
+                        messages.append(Message(mess.comp_id, mess.message_id, mess.message, mess.timeInserted))
 
                     # Adds the Company Object to the list of prospects
                     prospects.append(Company(newid, name, address, phone, messages[0].message, contacts))
@@ -188,14 +188,14 @@ def index():
 
                     # Pulls the prospect info at the random position
                     comp = companies[rand]
-                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
+                    message = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted.desc())
                     for mess in message:
-                        messages.append(Message(mess.comp_id, mess.message_id, mess.message, mess.time))
+                        messages.append(Message(mess.comp_id, mess.message_id, mess.message, mess.timeInserted))
                     # messages = db.execute("SELECT message FROM messages WHERE comp_id = :comp ORDER BY time DESC",
                     #                         comp=comp)
 
                     # If the prospect had been contacted within seven days, then it will reset the loop
-                    if (datetime.strptime(comp.time, '%Y-%m-%d %H:%M:%S') > (current - timedelta(days=7))) and (len(messages) > 1):
+                    if (datetime.strptime(comp.timeCreated, '%Y-%m-%d %H:%M:%S') > (current - timedelta(days=7))) and (len(messages) > 1):
                         i = i - 1
 
                     # If the prospect hasn't been contacted in the last 7 days then that prospects info is pulled
@@ -383,14 +383,14 @@ def prospects():
             address = comp.address + ", " + comp.city + ", " + comp.state + " " + comp.zip
             phone = comp.phone
             messId = 0
-            messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
+            messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted.desc())
             # messages = db.execute("SELECT * FROM messages WHERE comp_id = :comp ORDER BY time DESC",
             #                         comp=comp["comp_id"])
             conts = Contacts.query.filter_by(comp_id=comp.comp_id).all()
             # conts = db.execute("SELECT * FROM contacts WHERE comp_id = :comp",
             #                         comp=comp["comp_id"])
             for message in messages:
-                messes.append(Message(newid, messId, message.message, message.time))
+                messes.append(Message(newid, messId, message.message, message.timeInserted))
                 messId = messId + 1
             for cont in conts:
                 contacts.append(Contact(newid, cont.name, cont.title, cont.phone, cont.email))
@@ -438,14 +438,14 @@ def clients():
             address = comp.address + ", " + comp.city + ", " + comp.state + " " + comp.zip
             phone = comp.phone
             messId = 0
-            messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(time.desc())
+            messages = Messages.query.filter_by(comp_id=comp.comp_id).order_by(timeInserted.desc())
             # messages = db.execute("SELECT * FROM messages WHERE comp_id = :comp ORDER BY time DESC",
             #                         comp=comp["comp_id"])
             conts = Contacts.query.filter_by(comp_id=comp.comp_id).all()
             # conts = db.execute("SELECT * FROM contacts WHERE comp_id = :comp",
             #                         comp=comp["comp_id"])
             for message in messages:
-                messes.append(Message(newid, messId, message.message, message.time))
+                messes.append(Message(newid, messId, message.message, message.timeInserted))
                 messId = messId + 1
             for cont in conts:
                 contacts.append(Contact(newid, cont.name, cont.title, cont.phone, cont.email))
