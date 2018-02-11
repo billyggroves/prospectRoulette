@@ -508,6 +508,9 @@ def asyncInsert():
         userId = session.get("user_id")
         print("AsyncInsert............... " + str(userId))
 
+        # Gets timestamp
+        time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+
         # Pulls any company with matching names under that user
         checkDup = Companies.query.filter_by(user_id=userId, name=companyData[0]).first()
         # checkDup = db.execute("SELECT * FROM companies WHERE user_id = :user AND name = :name",
@@ -519,17 +522,7 @@ def asyncInsert():
             return jsonify(result="Company Already exists")
 
         # Inserts the new company into the user's database
-        inComp = Companies(None,
-                            userId,
-                            companyData[0],
-                            companyData[1],
-                            companyData[2],
-                            companyData[3],
-                            companyData[4],
-                            companyData[5],
-                            companyData[6],
-                            client,
-                            None)
+        inComp = Companies(None, userId, companyData[0], companyData[1], companyData[2], companyData[3], companyData[4], companyData[5], companyData[6], client, time)
         db.session.add(inComp)
         db.session.commit()
         # insert = db.execute("""INSERT INTO companies (user_id, name, phone, address, city, state, zip, country, isclient)
@@ -551,7 +544,7 @@ def asyncInsert():
         #                         name = companyData[0])
 
         # Inserts provided message into the new company's message pool
-        inMess = Messages(comp.comp_id, companyData[8])
+        inMess = Messages(comp.comp_id, companyData[8], time)
         db.session.add(inMess)
         db.session.commit()
         # inMess = db.execute("INSERT INTO messages (comp_id, message) VALUES (:comp_id, :message)",
