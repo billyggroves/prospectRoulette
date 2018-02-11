@@ -667,7 +667,7 @@ def messageInsert():
         #                         phone=compPhone)
 
         # Checks if message already exists
-        dups = Messages.query.filter_by(comp_id=company[0].comp_id, message=newMessage).first()
+        dups = Messages.query.filter_by(comp_id=company.comp_id, message=newMessage).first()
         # dups = db.execute("SELECT * FROM messages WHERE comp_id = :comp AND message = :message",
         #                         comp=company[0]["comp_id"],
         #                         message=newMessage)
