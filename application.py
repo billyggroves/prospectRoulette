@@ -544,7 +544,7 @@ def asyncInsert():
         #                         name = companyData[0])
 
         # Inserts provided message into the new company's message pool
-        inMess = Messages(comp.comp_id, companyData[8], finalStamp)
+        inMess = Messages(None, comp.comp_id, companyData[8], finalStamp)
         db.session.add(inMess)
         db.session.commit()
         # inMess = db.execute("INSERT INTO messages (comp_id, message) VALUES (:comp_id, :message)",
@@ -559,7 +559,7 @@ def asyncInsert():
         else:
 
             # Inserts the company's contact information
-            inCont = Contacts(comp.comp_id, contactData[0], contactData[1], contactData[2], contactData[3])
+            inCont = Contacts(None, comp.comp_id, contactData[0], contactData[1], contactData[2], contactData[3])
             db.session.add(inCont)
             db.session.commit()
             # insert = db.execute("INSERT INTO contacts VALUES (NULL, :comp_id, :name, :email, :phone, :title)",
