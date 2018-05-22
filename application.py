@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 
 # Configure application
 app = Flask(__name__)
-app.secret_key = " "  #Insert random KEY in string Format
+app.secret_key = ""  #Insert random KEY in string Format
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']

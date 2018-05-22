@@ -119,16 +119,18 @@
                             {% endfor %}
                             <input class="btn btn-primary" id="addContact" name="addContact_{{client.comp_id}}" value="Add Contact/Message" type="button">
                         </div>
-                        {% for message in client.message %}
-                            {% if message.comp_id == client.comp_id %}
-                                {% if message.mess_id == 0 %}
-                                {% else %}
-                                    <p class="clicked" id="lateMessage">
-                                        {{message.message}}
-                                    </p>
+                        <div id="lateMessage">
+                            {% for message in client.message %}
+                                {% if message.comp_id == client.comp_id %}
+                                    {% if message.mess_id == 0 %}
+                                    {% else %}
+                                        <p>
+                                            {{message.message}}
+                                        </p>
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                         <div class="clicked form" id="contact_{{client.comp_id}}">
                             <form id="contactForm_{{client.comp_id}}">
                                 <h1>Contact Information</h1>
